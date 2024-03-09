@@ -3,3 +3,7 @@ export enum Units {
   metric = "metric",
   imperial = "imperial",
 }
+
+export enum HeaderItem {
+  unitPreference = "unit-preference",
+}

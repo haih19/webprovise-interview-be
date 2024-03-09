@@ -1,7 +1,7 @@
 import express from "express";
 import { config } from "dotenv";
-import { IApiResponse } from "../types";
-import { Units } from "../helpers/enum";
+import { IApiResponse, CustomRequest } from "../types";
+import { HeaderItem } from "../helpers/enum";
 import { weatherServices } from "../services/weather";
 import { WeatherResponse } from "../types/weather";
 
@@ -10,17 +10,17 @@ config();
 interface GeoQueryParams {
   lat: number;
   lon: number;
-  units: Units;
 }
 
 export const getGeoCoordinates = async (
-  req: express.Request<{}, {}, {}, GeoQueryParams>,
+  req: CustomRequest<GeoQueryParams>,
   res: express.Response<IApiResponse<WeatherResponse | null>>
 ): Promise<express.Response<IApiResponse<WeatherResponse | null>>> => {
   try {
     const lat = req.query?.lat;
     const lon = req.query?.lon;
-    const units = req.query?.units;
+    const units = req.headers[HeaderItem.unitPreference];
+
     if (!lat || !lon) {
       return res.status(400).json({
         status: 400,

@@ -1,24 +1,24 @@
 import express from "express";
 import { config } from "dotenv";
 import { geoCoordinatesServices } from "../services/geo-coordinates";
-import { IApiResponse } from "../types";
+import { IApiResponse, CustomRequest } from "../types";
 import { GeoCoordinatesItem } from "../types/geo-coordinates";
-import { Units } from "../helpers/enum";
+import { HeaderItem } from "../helpers/enum";
 
 config();
 
 interface GeoQueryParams {
   city: string;
-  units: Units;
 }
 
 export const getGeoCoordinates = async (
-  req: express.Request<{}, {}, {}, GeoQueryParams>,
+  req: CustomRequest<GeoQueryParams>,
   res: express.Response<IApiResponse<GeoCoordinatesItem | null>>
 ): Promise<express.Response<IApiResponse<GeoCoordinatesItem | null>>> => {
   try {
     const city = req.query?.city;
-    const units = req.query?.units;
+    const units = req.headers[HeaderItem.unitPreference];
+
     if (typeof city !== "string" || !city) {
       return res.status(400).json({
         status: 400,
