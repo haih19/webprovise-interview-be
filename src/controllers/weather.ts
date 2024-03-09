@@ -1,37 +1,36 @@
 import express from "express";
 import { config } from "dotenv";
-import { geoCoordinatesServices } from "../services/geo-coordinates";
 import { IApiResponse } from "../types";
-import { GeoCoordinatesItem } from "../types/geo-coordinates";
 import { Units } from "../helpers/enum";
+import { weatherServices } from "../services/weather";
+import { WeatherResponse } from "../types/weather";
 
 config();
 
 interface GeoQueryParams {
-  city: string;
+  lat: number;
+  lon: number;
   units: Units;
 }
 
 export const getGeoCoordinates = async (
   req: express.Request<{}, {}, {}, GeoQueryParams>,
-  res: express.Response<IApiResponse<GeoCoordinatesItem | null>>
-): Promise<express.Response<IApiResponse<GeoCoordinatesItem | null>>> => {
+  res: express.Response<IApiResponse<WeatherResponse | null>>
+): Promise<express.Response<IApiResponse<WeatherResponse | null>>> => {
   try {
-    const city = req.query?.city;
+    const lat = req.query?.lat;
+    const lon = req.query?.lon;
     const units = req.query?.units;
-    if (typeof city !== "string" || !city) {
+    if (!lat || !lon) {
       return res.status(400).json({
         status: 400,
         message:
-          "Bad request: city query parameter is required and must be a string.",
+          "Bad request: latitude and longitude query parameters are required",
         content: null,
       });
     }
 
-    const response = await geoCoordinatesServices.getGeoCoordinates(
-      city,
-      units
-    );
+    const response = await weatherServices.getWeather(lat, lon, units);
 
     return res.status(200).json({
       status: 200,

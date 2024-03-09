@@ -1,2 +1,6 @@
 
-GET http://localhost:8080/api/v1/geo-coordinates?city=Hanoi
+# GET http://localhost:8080/api/v1/geo-coordinates?city=Hanoi&units=standard
+
+
+
+GET http://localhost:8080/api/v1/weather/current?lat=21.0294498&lon=105.8544441
